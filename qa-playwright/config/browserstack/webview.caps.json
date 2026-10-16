@@ -1,0 +1,31 @@
+{
+  "android": {
+    "platformName": "android",
+    "appium:platformVersion": "13.0",
+    "appium:deviceName": "Samsung Galaxy S23",
+    "appium:app": "__APP__",
+    "appium:automationName": "UiAutomator2",
+    "appium:autoWebview": true,
+    "appium:autoGrantPermissions": true,
+    "bstack:options": {
+      "projectName": "__PROJECT__",
+      "buildName": "__BUILD__",
+      "debug": true,
+      "networkLogs": true
+    }
+  },
+  "ios": {
+    "platformName": "ios",
+    "appium:platformVersion": "16",
+    "appium:deviceName": "iPhone 14",
+    "appium:app": "__APP__",
+    "appium:automationName": "XCUITest",
+    "appium:autoWebview": true,
+    "bstack:options": {
+      "projectName": "__PROJECT__",
+      "buildName": "__BUILD__",
+      "debug": true,
+      "networkLogs": true
+    }
+  }
+}

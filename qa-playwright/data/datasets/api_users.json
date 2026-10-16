@@ -1,0 +1,5 @@
+[
+  { "name": "Ana Gomez", "email": "ana.gomez@example.com", "expected": 201 },
+  { "name": "Luis Perez", "email": "luis.perez@example.com", "expected": 201 },
+  { "name": "Marta Ruiz", "email": "marta.ruiz@example.com", "expected": 201 }
+]

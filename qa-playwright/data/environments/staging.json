@@ -1,0 +1,11 @@
+{
+  "webBaseUrl": "https://staging.example.com",
+  "apiBaseUrl": "https://api.staging.example.com",
+  "timeout": 15000,
+  "browserstack": {
+    "user": "BROWSERSTACK_USER",
+    "key": "BROWSERSTACK_KEY",
+    "app": "bs://<app-id-staging>",
+    "project": "QA-Mobile-staging"
+  }
+}

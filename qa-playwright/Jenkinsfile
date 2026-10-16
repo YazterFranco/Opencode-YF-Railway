@@ -1,0 +1,31 @@
+pipeline {
+  agent { docker { image 'mcr.microsoft.com/playwright:v1.48.0-jammy' } }
+  environment { ENV = 'qa' }
+  options { timeout(time: 60, unit: 'MINUTES'); timestamps() }
+  stages {
+    stage('Install') {
+      steps { sh 'corepack enable && pnpm install --frozen-lockfile' }
+    }
+    stage('Lint') {
+      parallel {
+        stage('ESLint')   { steps { sh 'pnpm exec eslint .' } }
+        stage('Prettier') { steps { sh 'pnpm exec prettier --check .' } }
+        stage('Types')    { steps { sh 'pnpm exec tsc --noEmit' } }
+        stage('EnvSchema'){ steps { sh 'pnpm run validate:env' } }
+      }
+    }
+    stage('Tests') {
+      parallel {
+        stage('Web')    { steps { sh 'pnpm test:web' } }
+        stage('API')    { steps { sh 'pnpm test:api' } }
+        stage('Mobile') { steps { sh 'WEBVIEW_MODE=browserstack pnpm test:mobile' } }
+      }
+    }
+  }
+  post {
+    always {
+      publishHTML([reportDir: 'reports/html', reportFiles: 'index.html', reportName: 'Playwright Report'])
+      archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
+    }
+  }
+}

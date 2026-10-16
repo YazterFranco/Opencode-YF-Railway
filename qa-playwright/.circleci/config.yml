@@ -1,0 +1,28 @@
+version: 2.1
+
+jobs:
+  lint:
+    docker: [{ image: mcr.microsoft.com/playwright:v1.48.0-jammy }]
+    steps:
+      - checkout
+      - run: corepack enable && pnpm install --frozen-lockfile
+      - run: pnpm run validate:env
+      - run: pnpm exec eslint . && pnpm exec tsc --noEmit
+  test:
+    docker: [{ image: mcr.microsoft.com/playwright:v1.48.0-jammy }]
+    parameters:
+      suite: { type: string }
+      mode: { type: string, default: '' }
+    steps:
+      - checkout
+      - run: corepack enable && pnpm install --frozen-lockfile
+      - run: ENV=qa WEBVIEW_MODE=<< parameters.mode >> pnpm test:<< parameters.suite >>
+      - store_artifacts: { path: reports }
+
+workflows:
+  quality:
+    jobs:
+      - lint
+      - test: { name: test-web,    suite: web,    requires: [lint] }
+      - test: { name: test-api,    suite: api,    requires: [lint] }
+      - test: { name: test-mobile, suite: mobile, mode: browserstack, requires: [lint] }

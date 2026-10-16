@@ -1,0 +1,11 @@
+{
+  "webBaseUrl": "https://qa.example.com",
+  "apiBaseUrl": "https://api.qa.example.com",
+  "timeout": 15000,
+  "browserstack": {
+    "user": "BROWSERSTACK_USER",
+    "key": "BROWSERSTACK_KEY",
+    "app": "bs://<app-id-qa>",
+    "project": "QA-Mobile-qa"
+  }
+}

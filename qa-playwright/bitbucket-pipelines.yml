@@ -1,0 +1,51 @@
+image: mcr.microsoft.com/playwright:v1.48.0-jammy
+
+definitions:
+  caches:
+    pnpm: ~/.local/share/pnpm/store
+  steps:
+    - step: &lint
+        name: Lint (eslint + prettier + tsc + env schema)
+        caches: [pnpm]
+        script:
+          - corepack enable
+          - pnpm install --frozen-lockfile
+          - pnpm run validate:env
+          - pnpm exec eslint .
+          - pnpm exec prettier --check .
+          - pnpm exec tsc --noEmit
+    - step: &test-web
+        name: Web tests
+        caches: [pnpm]
+        script:
+          - corepack enable && pnpm install --frozen-lockfile
+          - ENV=qa pnpm test:web
+        artifacts: [reports/**]
+    - step: &test-api
+        name: API tests
+        caches: [pnpm]
+        script:
+          - corepack enable && pnpm install --frozen-lockfile
+          - ENV=qa pnpm test:api
+        artifacts: [reports/**]
+    - step: &test-mobile
+        name: Mobile webview (BrowserStack)
+        caches: [pnpm]
+        script:
+          - corepack enable && pnpm install --frozen-lockfile
+          - ENV=qa WEBVIEW_MODE=browserstack pnpm test:mobile
+        artifacts: [reports/**]
+
+pipelines:
+  default:
+    - step: *lint
+    - parallel:
+        - step: *test-web
+        - step: *test-api
+        - step: *test-mobile
+  pull-requests:
+    '**':
+      - step: *lint
+      - parallel:
+          - step: *test-web
+          - step: *test-api
