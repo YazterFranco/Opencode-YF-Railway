@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selección de Framework QA/QE — Informe comparativo</title>
+<style>
+  :root{
+    --bg:#0f1420; --bg2:#151b2b; --card:#1a2233; --card2:#202a40;
+    --txt:#e8edf7; --muted:#9aa8c2; --line:#2b3651;
+    --accent:#4f8cff; --good:#2ecc71; --warn:#f1c40f; --bad:#e74c3c;
+    --wdio:#ff8a3d; --pw:#3ddc84; --rf:#25c2d6; --ser:#5b8def;
+    --cy:#69d3a7; --ap:#b07cf0; --ka:#ff5470; --ma:#4aa8e0;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:linear-gradient(180deg,#0b0f18,#0f1420 30%);color:var(--txt);line-height:1.55;
+  }
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  header.hero{
+    padding:64px 0 40px;
+    background:radial-gradient(1200px 400px at 20% -10%,rgba(79,140,255,.28),transparent 60%),
+               radial-gradient(900px 400px at 90% 0%,rgba(61,220,132,.16),transparent 60%);
+    border-bottom:1px solid var(--line);
+  }
+  .hero h1{font-size:2.35rem;margin:0 0 10px;letter-spacing:-.5px}
+  .hero p{color:var(--muted);max-width:820px;font-size:1.05rem}
+  .pill{display:inline-block;background:rgba(79,140,255,.14);color:#9dc0ff;border:1px solid rgba(79,140,255,.35);
+    padding:5px 12px;border-radius:999px;font-size:.8rem;margin-bottom:14px}
+  nav.toc{position:sticky;top:0;z-index:20;background:rgba(15,20,32,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line)}
+  nav.toc ul{display:flex;gap:18px;list-style:none;margin:0;padding:12px 0;flex-wrap:wrap;font-size:.86rem}
+  nav.toc a{color:var(--muted)} nav.toc a:hover{color:var(--txt)}
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:1.6rem;margin:0 0 6px} h3{font-size:1.12rem;margin:26px 0 10px}
+  .sub{color:var(--muted);margin-top:0}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+  .card h4{margin:0 0 6px;font-size:1rem}
+  .winner{border-color:rgba(61,220,132,.5);background:linear-gradient(180deg,rgba(61,220,132,.10),var(--card))}
+  .winner.alt{border-color:rgba(255,138,61,.5);background:linear-gradient(180deg,rgba(255,138,61,.10),var(--card))}
+  .tag{font-size:.72rem;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:10px}
+  th,td{border-bottom:1px solid var(--line);padding:10px 10px;text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:600;position:sticky;top:52px;background:var(--bg2)}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  .num{text-align:center;font-variant-numeric:tabular-nums}
+  .heat{display:inline-block;min-width:38px;padding:4px 8px;border-radius:8px;text-align:center;font-weight:600;font-size:.82rem}
+  .badge{font-weight:700}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+  .controls button{
+    background:var(--card2);color:var(--txt);border:1px solid var(--line);padding:9px 14px;border-radius:10px;
+    cursor:pointer;font-size:.88rem;transition:.15s
+  }
+  .controls button:hover{border-color:var(--accent)}
+  .controls button.active{background:rgba(79,140,255,.18);border-color:var(--accent);color:#bcd4ff}
+  .bars .row{display:grid;grid-template-columns:150px 1fr 60px;align-items:center;gap:10px;margin:9px 0}
+  .bars .track{background:var(--bg2);border:1px solid var(--line);border-radius:8px;height:22px;overflow:hidden}
+  .bars .fill{height:100%;border-radius:8px;transition:width .6s ease;width:0}
+  .bars .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:10px}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle}
+  .timeline{position:relative;margin:24px 0 0;padding-left:26px;border-left:2px solid var(--line)}
+  .timeline .step{position:relative;margin:0 0 20px}
+  .timeline .step::before{content:'';position:absolute;left:-34px;top:4px;width:14px;height:14px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 0 4px rgba(79,140,255,.18)}
+  .timeline .step h4{margin:0 0 4px}
+  .kv{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0;font-size:.9rem}
+  .callout{background:linear-gradient(180deg,rgba(79,140,255,.12),var(--card));border:1px solid rgba(79,140,255,.35);
+    border-radius:var(--radius);padding:18px;margin-top:16px}
+  code{background:#0b1120;border:1px solid var(--line);padding:1px 6px;border-radius:6px;font-size:.85em}
+  footer{padding:34px 0;color:var(--muted);font-size:.85rem}
+  .rank-num{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--card2);border:1px solid var(--line);
+    align-items:center;justify-content:center;font-weight:700;font-size:.8rem;margin-right:8px}
+  .rank-1 .rank-num{background:rgba(255,215,0,.18);border-color:gold;color:gold}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:7px;vertical-align:middle}
+  .muted{color:var(--muted)}
+  .chk{list-style:none;padding:0}
+  .chk li{padding:6px 0 6px 26px;position:relative;border-bottom:1px dashed var(--line)}
+  .chk li::before{content:'✓';position:absolute;left:0;color:var(--good);font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="pill">Informe técnico · QA → QE · 2026</span>
+    <h1>Selección del mejor framework de pruebas automatizadas</h1>
+    <p>Comparativa de los principales frameworks para pruebas <strong>API, Web y App (nativa e híbrida)</strong>, evaluados con criterios ponderados para validar la mejor opción y su evolución hacia <strong>Quality Engineering (QE)</strong>.</p>
+    <p class="muted" style="font-size:.85rem;margin-top:14px">Metodología: scoring ponderado multi-criterio (0–10) + radar de capacidades + perfiles de peso. Datos de ecosistema 2026.</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <ul>
+      <li><a href="#resumen">Resumen</a></li>
+      <li><a href="#criterios">Criterios</a></li>
+      <li><a href="#perfiles">Perfiles</a></li>
+      <li><a href="#capacidades">Matriz capacidades</a></li>
+      <li><a href="#scoring">Scoring</a></li>
+      <li><a href="#radar">Radar</a></li>
+      <li><a href="#detalle">Detalle</a></li>
+      <li><a href="#roadmap">Roadmap QA→QE</a></li>
+      <li><a href="#recomendacion">Recomendación</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section id="resumen">
+  <div class="wrap">
+    <h2>1. Resumen ejecutivo</h2>
+    <p class="sub">No existe un ganador único: depende del peso que des a "app nativa" vs. "evolución QE". El modelo ofrece dos perfiles y ambos coinciden en el top 3.</p>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card winner">
+        <h4>🏆 Perfil “Cobertura total” (API + Web + App nativa)</h4>
+        <p class="muted" style="margin:.3rem 0"><strong class="badge">WebdriverIO</strong> — el único runner moderno que integra Web, API y Appium (nativa/híbrida) con el mismo stack y configuración. Ideal si necesitas <em>un solo framework para todo</em>.</p>
+        <p style="margin:.3rem 0"><span class="tag">Runner único</span> <span class="tag">Appium de fábrica</span> <span class="tag">BrowserStack</span></p>
+      </div>
+      <div class="card winner alt">
+        <h4>🏆 Perfil “Evolución QE” (DX + ecosistema + webview)</h4>
+        <p class="muted" style="margin:.3rem 0"><strong class="badge">Playwright</strong> — mejor DX, auto-wait, tracing, visual y a11y nativos y soporte multi-lenguaje. Domina Web+API y webview; el gap es solo <em>app nativa pura</em> (se cubre con Appium).</p>
+        <p style="margin:.3rem 0"><span class="tag">Auto-wait</span> <span class="tag">Multi-lenguaje</span> <span class="tag">MCP/IA</span></p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Conclusión temprana:</strong> para un requisito estricto de <em>API + Web + App nativa en un solo framework</em> → <strong>WebdriverIO</strong> o <strong>Robot Framework</strong>.
+      Para el caso real reportado (API + Web + <em>app híbrida/webview</em>) con foco en QE → <strong>Playwright (+ Appium para nativo puntual)</strong>.
+    </div>
+  </div>
+</section>
+
+<section id="criterios">
+  <div class="wrap">
+    <h2>2. Criterios y pesos</h2>
+    <p class="sub">Siete criterios puntuados 0–10. Los pesos cambian según el perfil de decisión.</p>
+    <table id="criteriaTable">
+      <thead><tr><th>Criterio</th><th class="num">Peso “Cobertura total”</th><th class="num">Peso “Evolución QE”</th><th class="num">Peso “Mi caso (webview)”</th><th>Qué mide</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="perfiles">
+  <div class="wrap">
+    <h2>3. Perfiles de framework</h2>
+    <p class="sub">Ficha rápida de cada candidato.</p>
+    <div class="grid g3" id="profiles"></div>
+  </div>
+</section>
+
+<section id="capacidades">
+  <div class="wrap">
+    <h2>4. Matriz de capacidades</h2>
+    <p class="sub">Verde = nativo/fuerte · Amarillo = parcial/con plugin · Rojo = no soportado.</p>
+    <table id="capTable">
+      <thead><tr><th>Framework</th><th class="num">API</th><th class="num">Web UI</th><th class="num">App nativa</th><th class="num">Híbrida/WebView</th><th class="num">Visual</th><th class="num">A11y</th><th class="num">BDD</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="scoring">
+  <div class="wrap">
+    <h2>5. Scoring ponderado</h2>
+    <p class="sub">Cambia el perfil para recalcular el ranking en vivo.</p>
+    <div class="controls" id="profileControls"></div>
+    <div class="grid g2">
+      <div class="card">
+        <h3 style="margin-top:0">Puntaje ponderado (0–10)</h3>
+        <div class="bars" id="barChart"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Ranking</h3>
+        <ol id="ranking" style="padding-left:0;list-style:none"></ol>
+        <p class="muted" style="font-size:.85rem">Los tres primeros varían según el perfil seleccionado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="radar">
+  <div class="wrap">
+    <h2>6. Radar de capacidades (top 3 del perfil)</h2>
+    <p class="sub">Comparación multidimensional en los 7 criterios.</p>
+    <div class="card">
+      <div id="radarWrap" style="display:flex;justify-content:center"></div>
+      <div class="legend" id="radarLegend"></div>
+    </div>
+  </div>
+</section>
+
+<section id="detalle">
+  <div class="wrap">
+    <h2>7. Comparación detallada</h2>
+    <div class="card">
+      <table id="detailTable">
+        <thead><tr><th>Dimensión</th><th>WebdriverIO</th><th>Playwright</th><th>Robot Framework</th><th>Serenity BDD</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <h2>8. Evolución QA → QE</h2>
+    <p class="sub">El framework es solo el core: QE es un portafolio por capas dentro del pipeline.</p>
+    <div class="timeline">
+      <div class="step"><h4>Capa 1 · E2E / UI</h4><p class="muted">Playwright o WebdriverIO como core de UI. POM + fixtures + datos externalizados.</p></div>
+      <div class="step"><h4>Capa 2 · Mobile nativa</h4><p class="muted">Appium (o WebdriverIO+Appium) para dispositivos reales / BrowserStack.</p></div>
+      <div class="step"><h4>Capa 3 · Contratos API</h4><p class="muted">Pact (consumer-driven) como gate en el pipeline antes de la UI.</p></div>
+      <div class="step"><h4>Capa 4 · Performance</h4><p class="muted">k6 / JMeter como stage independiente con umbrales SLO.</p></div>
+      <div class="step"><h4>Capa 5 · Seguridad</h4><p class="muted">SAST/DAST (SonarQube, OWASP ZAP) integrados en CI.</p></div>
+      <div class="step"><h4>Capa 6 · Observabilidad de calidad</h4><p class="muted">Allure + métricas (pass/flaky/coverage) y dashboards. Shift-left: API/contratos primero, UI al final.</p></div>
+    </div>
+    <div class="callout"><strong>Principio QE:</strong> ningún tool te hace QE; el valor está en la estrategia por capas, los gates automatizados y las métricas de calidad que guían decisiones.</div>
+  </div>
+</section>
+
+<section id="recomendacion">
+  <div class="wrap">
+    <h2>9. Recomendación y checklist</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3 style="margin-top:0">Árbol de decisión</h3>
+        <div class="kv"><span>¿App nativa (APK/IPA) es requisito?</span><span><strong>Sí</strong></span></div>
+        <div class="kv"><span>↳ ¿Quieres un solo runner?</span><span><strong>WebdriverIO</strong></span></div>
+        <div class="kv"><span>↳ ¿Equipo no-JS / keyword-driven?</span><span><strong>Robot Framework</strong></span></div>
+        <div class="kv"><span>¿Solo web + API + webview?</span><span><strong>Playwright</strong></span></div>
+        <div class="kv"><span>¿BDD empresarial Java?</span><span><strong>Serenity BDD</strong></span></div>
+        <div class="kv"><span>¿API-first puro?</span><span><strong>Karate / Pact</strong></span></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Checklist de adopción QE</h3>
+        <ul class="chk">
+          <li>Core de UI definido (Playwright / WebdriverIO)</li>
+          <li>Mobile nativa cubierta (Appium) si aplica</li>
+          <li>Contratos API (Pact) como gate</li>
+          <li>Performance (k6) en stage aparte</li>
+          <li>Seguridad SAST/DAST en CI</li>
+          <li>Datos externalizados por entorno + schema</li>
+          <li>Linters por lenguaje bloqueantes</li>
+          <li>Reportes (Allure/HTML) y métricas de calidad</li>
+          <li>Pipelines portables (Bitbucket/Jenkins/Circle)</li>
+          <li>Shift-left: pirámide, no helado</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="border-color:rgba(61,220,132,.4);background:linear-gradient(180deg,rgba(61,220,132,.12),var(--card))">
+      <strong>Veredicto final:</strong> para el contexto reportado (API + Web + app híbrida/webview en BrowserStack), la ruta más sólida y evolutiva es <strong>Playwright como estándar QE + Appium para nativo puntual</strong>. Si el requisito es literalmente “un runner para los tres dominios incluyendo nativa”, la respuesta es <strong>WebdriverIO</strong> (o <strong>Robot Framework</strong> en equipos keyword-driven).
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Informe generado como parte de la plataforma de automatización QA/QE · Documento autocontenido (sin dependencias externas).</p>
+    <p class="muted">Scoring orientativo basado en el estado del ecosistema 2026. Ajusta pesos y puntajes según tu contexto.</p>
+  </div>
+</footer>
+
+<script>
+/* ---------- Datos ---------- */
+const CRITERIA = [
+  {id:'api',   label:'Cobertura API',        w:{total:.15, qe:.12, webview:.25}, desc:'Pruebas de servicios REST/SOAP, contratos y validación de esquemas.'},
+  {id:'web',   label:'Cobertura Web',        w:{total:.20, qe:.18, webview:.35}, desc:'UI, DOM, auto-wait, múltiples navegadores.'},
+  {id:'app',   label:'App nativa',           w:{total:.20, qe:.10, webview:.05}, desc:'iOS/Android nativo, gestos, dispositivos reales.'},
+  {id:'qe',    label:'Madurez QE',           w:{total:.15, qe:.25, webview:.15}, desc:'Ecosistema, contract/performance/observabilidad, tooling.'},
+  {id:'dx',    label:'DX / Mantenibilidad',  w:{total:.10, qe:.15, webview:.10}, desc:'Ergonomía, debugging, curva de aprendizaje, mantenibilidad.'},
+  {id:'ci',    label:'CI/CD & Reporting',    w:{total:.10, qe:.10, webview:.10}, desc:'Paralelización, artefactos, integración con pipelines.'},
+  {id:'adopt', label:'Adopción equipo',      w:{total:.10, qe:.10, webview:.10}, desc:'Facilidad de incorporación por perfiles mixtos.'},
+];
+
+const COLOR = {
+  wdio:'#ff8a3d', pw:'#3ddc84', rf:'#25c2d6', ser:'#5b8def',
+  cy:'#69d3a7', ap:'#b07cf0', ka:'#ff5470', ma:'#4aa8e0'
+};
+
+const FRAMEWORKS = [
+  {id:'wdio', name:'WebdriverIO', color:COLOR.wdio,
+   scores:{api:9, web:9, app:9, qe:8, dx:7, ci:9, adopt:7},
+   caps:{api:'high',web:'high',app:'high',hybrid:'high',visual:'med',a11y:'med',bdd:'med'},
+   lang:'TypeScript / JS', why:'Runner único para Web + API + Appium (nativa/híbrida).'},
+  {id:'pw', name:'Playwright', color:COLOR.pw,
+   scores:{api:9, web:10, app:3, qe:10, dx:10, ci:10, adopt:9},
+   caps:{api:'high',web:'high',app:'low',hybrid:'high',visual:'high',a11y:'high',bdd:'med'},
+   lang:'TS, Python, Java, .NET', why:'Mejor DX y ecosistema QE; Web+API+webview nativos.'},
+  {id:'rf', name:'Robot Framework', color:COLOR.rf,
+   scores:{api:8, web:8, app:9, qe:8, dx:7, ci:9, adopt:8},
+   caps:{api:'high',web:'high',app:'high',hybrid:'high',visual:'med',a11y:'med',bdd:'high'},
+   lang:'Python (keywords)', why:'Keyword-driven, cubre los 3 dominios con sintaxis legible.'},
+  {id:'ser', name:'Serenity BDD', color:COLOR.ser,
+   scores:{api:9, web:8, app:8, qe:9, dx:6, ci:9, adopt:5},
+   caps:{api:'high',web:'high',app:'high',hybrid:'high',visual:'med',a11y:'high',bdd:'high'},
+   lang:'Java / TS', why:'Screenplay, reporting de alto nivel, enfoque QE empresarial.'},
+  {id:'cy', name:'Cypress', color:COLOR.cy,
+   scores:{api:6, web:10, app:1, qe:6, dx:9, ci:8, adopt:8},
+   caps:{api:'med',web:'high',app:'low',hybrid:'med',visual:'high',a11y:'high',bdd:'med'},
+   lang:'JS / TS', why:'Excelente en Web; sin app nativa.'},
+  {id:'ap', name:'Appium (driver)', color:COLOR.ap,
+   scores:{api:2, web:4, app:10, qe:6, dx:5, ci:8, adopt:6},
+   caps:{api:'low',web:'med',app:'high',hybrid:'high',visual:'med',a11y:'med',bdd:'med'},
+   lang:'Multi (driver)', why:'Estándar de mobile; requiere runner externo.'},
+  {id:'ka', name:'Karate', color:COLOR.ka,
+   scores:{api:10, web:5, app:1, qe:6, dx:7, ci:8, adopt:6},
+   caps:{api:'high',web:'med',app:'low',hybrid:'low',visual:'low',a11y:'low',bdd:'high'},
+   lang:'DSL / JVM', why:'API-first de altísimo nivel; poca cobertura móvil.'},
+  {id:'ma', name:'Maestro', color:COLOR.ma,
+   scores:{api:2, web:4, app:10, qe:5, dx:9, ci:7, adopt:8},
+   caps:{api:'low',web:'med',app:'high',hybrid:'high',visual:'med',a11y:'low',bdd:'high'},
+   lang:'YAML', why:'Mobile-first simple; no cubre API/Web.'},
+];
+
+const PROFILES = {
+  total:   {name:'Cobertura total', desc:'API + Web + App nativa por igual'},
+  qe:      {name:'Evolución QE',    desc:'Prioriza DX y ecosistema QE'},
+  webview: {name:'Mi caso (webview)',desc:'Web + API + app híbrida'},
+};
+let currentProfile = 'total';
+
+/* ---------- Utilidades ---------- */
+const cColor = {high:'#2ecc71', med:'#f1c40f', low:'#e74c3c'};
+const cLabel = {high:'Nativo', med:'Parcial', low:'No'};
+
+function weighted(fw, profile){
+  return CRITERIA.reduce((sum,c)=> sum + (fw.scores[c.id] * c.w[profile]), 0);
+}
+function ranked(profile){
+  return [...FRAMEWORKS].sort((a,b)=> weighted(b,profile)-weighted(a,profile));
+}
+
+/* ---------- Render: criterios ---------- */
+function renderCriteria(){
+  const tb = document.querySelector('#criteriaTable tbody');
+  tb.innerHTML = CRITERIA.map(c=>`
+    <tr>
+      <td><strong>${c.label}</strong></td>
+      <td class="num">${(c.w.total*100).toFixed(0)}%</td>
+      <td class="num">${(c.w.qe*100).toFixed(0)}%</td>
+      <td class="num">${(c.w.webview*100).toFixed(0)}%</td>
+      <td class="muted">${c.desc}</td>
+    </tr>`).join('');
+}
+
+/* ---------- Render: perfiles ---------- */
+function renderProfiles(){
+  const el = document.getElementById('profiles');
+  el.innerHTML = FRAMEWORKS.map(fw=>`
+    <div class="card" style="border-top:3px solid ${fw.color}">
+      <h4><span class="swatch" style="background:${fw.color}"></span>${fw.name}</h4>
+      <p class="muted" style="margin:.2rem 0 .5rem;font-size:.85rem">${fw.lang}</p>
+      <p style="margin:.2rem 0">${fw.why}</p>
+      <p style="margin:.6rem 0 0"><span class="tag">API ${fw.scores.api}</span> <span class="tag">Web ${fw.scores.web}</span> <span class="tag">App ${fw.scores.app}</span></p>
+    </div>`).join('');
+}
+
+/* ---------- Render: matriz capacidades ---------- */
+function renderCaps(){
+  const tb = document.getElementById('capTable').querySelector('tbody');
+  tb.innerHTML = FRAMEWORKS.map(fw=>`
+    <tr>
+      <td><span class="swatch" style="background:${fw.color}"></span><strong>${fw.name}</strong></td>
+      ${['api','web','app','hybrid','visual','a11y','bdd'].map(k=>{
+        const v = fw.caps[k];
+        return `<td class="num"><span class="heat" style="background:${cColor[v]}22;color:${cColor[v]};border:1px solid ${cColor[v]}55">${cLabel[v]}</span></td>`;
+      }).join('')}
+    </tr>`).join('');
+}
+
+/* ---------- Render: barras + ranking ---------- */
+function renderBars(){
+  const order = ranked(currentProfile);
+  const max = 10;
+  const bars = document.getElementById('barChart');
+  bars.innerHTML = order.map(fw=>{
+    const s = weighted(fw,currentProfile);
+    const pct = (s/max)*100;
+    return `<div class="row">
+      <span>${fw.name}</span>
+      <div class="track"><div class="fill" style="width:${pct}%;background:linear-gradient(90deg,${fw.color},${fw.color}aa)"></div></div>
+      <span class="val" style="color:${fw.color}">${s.toFixed(2)}</span>
+    </div>`;
+  }).join('');
+
+  const rank = document.getElementById('ranking');
+  rank.innerHTML = order.map((fw,i)=>`
+    <li class="${i===0?'rank-1':''}" style="display:flex;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)">
+      <span class="rank-num">${i+1}</span>
+      <span style="flex:1"><span class="swatch" style="background:${fw.color}"></span>${fw.name}</span>
+      <strong style="color:${fw.color}">${weighted(fw,currentProfile).toFixed(2)}</strong>
+    </li>`).join('');
+
+  renderRadar();
+}
+
+/* ---------- Render: radar SVG ---------- */
+function renderRadar(){
+  const axes = CRITERIA.map(c=>c.label);
+  const n = axes.length;
+  const size=520, cx=size/2, cy=size/2, R=175;
+  const top = ranked(currentProfile).slice(0,3);
+
+  const pt = (i, val)=>{
+    const ang = (Math.PI*2)*(i/n) - Math.PI/2;
+    const r = R*(val/10);
+    return [cx + r*Math.cos(ang), cy + r*Math.sin(ang)];
+  };
+  const poly = fw => axes.map((_,i)=> pt(i, fw.scores[CRITERIA[i].id]).join(',')).join(' ');
+
+  let svg = `<svg viewBox="0 0 ${size} ${size}" width="100%" style="max-width:${size}px">`;
+  // grid
+  [2,4,6,8,10].forEach(lvl=>{
+    const pts = axes.map((_,i)=> pt(i,lvl).join(',')).join(' ');
+    svg += `<polygon points="${pts}" fill="none" stroke="#2b3651" stroke-width="1"/>`;
+  });
+  // spokes + labels
+  axes.forEach((label,i)=>{
+    const [x,y] = pt(i,10);
+    svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#2b3651" stroke-width="1"/>`;
+    const [lx,ly] = pt(i,11.6);
+    const anchor = Math.abs(lx-cx)<8 ? 'middle' : (lx>cx?'start':'end');
+    svg += `<text x="${lx}" y="${ly}" fill="#9aa8c2" font-size="12" text-anchor="${anchor}" dominant-baseline="middle">${label}</text>`;
+  });
+  // data polygons
+  top.forEach(fw=>{
+    svg += `<polygon points="${poly(fw)}" fill="${fw.color}33" stroke="${fw.color}" stroke-width="2"/>`;
+    axes.forEach((_,i)=>{
+      const [x,y]=pt(i, fw.scores[CRITERIA[i].id]);
+      svg += `<circle cx="${x}" cy="${y}" r="3.5" fill="${fw.color}"/>`;
+    });
+  });
+  svg += `</svg>`;
+  document.getElementById('radarWrap').innerHTML = svg;
+
+  document.getElementById('radarLegend').innerHTML = top.map(fw=>
+    `<span><i style="background:${fw.color}"></i>${fw.name} · ${weighted(fw,currentProfile).toFixed(2)}</span>`
+  ).join('');
+}
+
+/* ---------- Render: detalle ---------- */
+const DETAIL = [
+  ['Lenguaje', 'TypeScript/JS', 'TS/Python/Java/.NET', 'Python (keywords)', 'Java/TS'],
+  ['App nativa', 'Nativo (Appium)', 'No (webview sí)', 'Nativo (AppiumLibrary)', 'Vía Appium'],
+  ['API testing', 'Integrado', 'Request context', 'RequestsLibrary', 'Rest-Assured'],
+  ['Auto-wait', 'Sí', 'Sí (avanzado)', 'Sí (Selenium/Browser)', 'Sí (Screenplay)'],
+  ['Visual testing', 'Plugin', 'Nativo toHaveScreenshot', 'Plugin', 'Plugin'],
+  ['Accesibilidad', 'Plugin (axe)', 'Nativo (@axe-core)', 'Plugin', 'Nativo'],
+  ['BDD', 'Vía Cucumber', 'Vía Cucumber', 'Nativo (Gherkin-like)', 'Nativo (Cucumber)'],
+  ['Reportes', 'Allure/JUnit', 'HTML + trace', 'log.html + XML', 'Serenity Reports'],
+  ['Paralelismo', 'Sí', 'Sí (workers)', 'Sí (pabot)', 'Sí'],
+  ['Curva aprendizaje', 'Media', 'Baja', 'Baja', 'Alta'],
+];
+function renderDetail(){
+  const tb = document.getElementById('detailTable').querySelector('tbody');
+  tb.innerHTML = DETAIL.map(row=>`<tr>${row.map((c,i)=> i===0?`<td><strong>${c}</strong></td>`:`<td class="muted">${c}</td>`).join('')}</tr>`).join('');
+}
+
+/* ---------- Render: controles de perfil ---------- */
+function renderControls(){
+  const el = document.getElementById('profileControls');
+  el.innerHTML = Object.entries(PROFILES).map(([k,v])=>
+    `<button data-p="${k}" class="${k===currentProfile?'active':''}">${v.name}</button>`).join('');
+  el.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      currentProfile = b.dataset.p;
+      el.querySelectorAll('button').forEach(x=>x.classList.toggle('active', x.dataset.p===currentProfile));
+      renderBars();
+    });
+  });
+}
+
+/* ---------- Init ---------- */
+renderCriteria();
+renderProfiles();
+renderCaps();
+renderControls();
+renderBars();
+renderDetail();
+</script>
+</body>
+</html>
