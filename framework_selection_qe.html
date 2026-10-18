@@ -173,7 +173,13 @@
     <div class="controls" id="profileControls"></div>
     <div class="grid g2">
       <div class="card">
-        <h3 style="margin-top:0">Puntaje ponderado (0–10)</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <h3 style="margin:0">Puntaje ponderado (0–10)</h3>
+          <div class="controls" style="margin:0">
+            <button id="exportBarsSvg" title="Descargar SVG">SVG</button>
+            <button id="exportBarsPng" title="Descargar PNG">PNG</button>
+          </div>
+        </div>
         <div class="bars" id="barChart"></div>
       </div>
       <div class="card">
@@ -190,6 +196,10 @@
     <h2>6. Radar de capacidades (top 3 del perfil)</h2>
     <p class="sub">Comparación multidimensional en los 7 criterios.</p>
     <div class="card">
+      <div class="controls" style="justify-content:flex-end">
+        <button id="exportRadarSvg" title="Descargar SVG">SVG</button>
+        <button id="exportRadarPng" title="Descargar PNG">PNG</button>
+      </div>
       <div id="radarWrap" style="display:flex;justify-content:center"></div>
       <div class="legend" id="radarLegend"></div>
     </div>
@@ -274,7 +284,7 @@ const CRITERIA = [
   {id:'app',   label:'App nativa',           w:{total:.20, qe:.10, webview:.05}, desc:'iOS/Android nativo, gestos, dispositivos reales.'},
   {id:'qe',    label:'Madurez QE',           w:{total:.15, qe:.25, webview:.15}, desc:'Ecosistema, contract/performance/observabilidad, tooling.'},
   {id:'dx',    label:'DX / Mantenibilidad',  w:{total:.10, qe:.15, webview:.10}, desc:'Ergonomía, debugging, curva de aprendizaje, mantenibilidad.'},
-  {id:'ci',    label:'CI/CD & Reporting',    w:{total:.10, qe:.10, webview:.10}, desc:'Paralelización, artefactos, integración con pipelines.'},
+  {id:'ci',    label:'CI/CD y Reporting',   w:{total:.10, qe:.10, webview:.10}, desc:'Paralelización, artefactos, integración con pipelines.'},
   {id:'adopt', label:'Adopción equipo',      w:{total:.10, qe:.10, webview:.10}, desc:'Facilidad de incorporación por perfiles mixtos.'},
 ];
 
@@ -324,6 +334,7 @@ const PROFILES = {
   webview: {name:'Mi caso (webview)',desc:'Web + API + app híbrida'},
 };
 let currentProfile = 'total';
+let lastRadarSvg = '';
 
 /* ---------- Utilidades ---------- */
 const cColor = {high:'#2ecc71', med:'#f1c40f', low:'#e74c3c'};
@@ -438,6 +449,7 @@ function renderRadar(){
   });
   svg += `</svg>`;
   document.getElementById('radarWrap').innerHTML = svg;
+  lastRadarSvg = svg.replace('<svg ', `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" `);
 
   document.getElementById('radarLegend').innerHTML = top.map(fw=>
     `<span><i style="background:${fw.color}"></i>${fw.name} · ${weighted(fw,currentProfile).toFixed(2)}</span>`
@@ -476,6 +488,60 @@ function renderControls(){
   });
 }
 
+/* ---------- Export SVG / PNG ---------- */
+function buildBarsSVG(){
+  const order = ranked(currentProfile);
+  const rowH = 46, padTop = 74, w = 760, h = padTop + order.length*rowH + 24;
+  const labelW = 180, barW = w - labelW - 120;
+  const FONT = 'Segoe UI, Roboto, Arial, sans-serif';
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+  s += `<rect width="${w}" height="${h}" fill="#0f1420"/>`;
+  s += `<text x="24" y="40" fill="#e8edf7" font-size="20" font-weight="700" font-family="${FONT}">Scoring QA/QE — perfil: ${PROFILES[currentProfile].name}</text>`;
+  s += `<text x="24" y="60" fill="#9aa8c2" font-size="12" font-family="${FONT}">${PROFILES[currentProfile].desc}</text>`;
+  order.forEach((fw,i)=>{
+    const y = padTop + i*rowH;
+    const val = weighted(fw, currentProfile);
+    const bw = Math.max(4, barW*(val/10));
+    s += `<text x="24" y="${y+23}" fill="#e8edf7" font-size="14" font-family="${FONT}">${fw.name}</text>`;
+    s += `<rect x="${labelW}" y="${y+7}" width="${barW}" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>`;
+    s += `<rect x="${labelW}" y="${y+7}" width="${bw}" height="22" rx="6" fill="${fw.color}"/>`;
+    s += `<text x="${labelW+barW+14}" y="${y+23}" fill="${fw.color}" font-size="14" font-weight="700" font-family="${FONT}">${val.toFixed(2)}</text>`;
+  });
+  s += `</svg>`;
+  return s;
+}
+function downloadFile(name, data, type){
+  const blob = new Blob([data], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  URL.revokeObjectURL(url);
+}
+function svgToPng(svgString, filename, scale = 2){
+  const img = new Image();
+  const url = URL.createObjectURL(new Blob([svgString], {type:'image/svg+xml;charset=utf-8'}));
+  img.onload = ()=>{
+    const m = svgString.match(/width="([\d.]+)"\s+height="([\d.]+)"/) || svgString.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+    const w = m ? parseFloat(m[1]) : img.width;
+    const h = m ? parseFloat(m[2]) : img.height;
+    const c = document.createElement('canvas');
+    c.width = w*scale; c.height = h*scale;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#0f1420'; ctx.fillRect(0,0,c.width,c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url);
+    const a = document.createElement('a');
+    a.download = filename; a.href = c.toDataURL('image/png'); a.click();
+  };
+  img.src = url;
+}
+function wireExports(){
+  document.getElementById('exportBarsSvg').addEventListener('click', ()=> downloadFile(`scoring_${currentProfile}.svg`, buildBarsSVG(), 'image/svg+xml'));
+  document.getElementById('exportBarsPng').addEventListener('click', ()=> svgToPng(buildBarsSVG(), `scoring_${currentProfile}.png`));
+  document.getElementById('exportRadarSvg').addEventListener('click', ()=> downloadFile(`radar_${currentProfile}.svg`, lastRadarSvg, 'image/svg+xml'));
+  document.getElementById('exportRadarPng').addEventListener('click', ()=> svgToPng(lastRadarSvg, `radar_${currentProfile}.png`));
+}
+
 /* ---------- Init ---------- */
 renderCriteria();
 renderProfiles();
@@ -483,6 +549,7 @@ renderCaps();
 renderControls();
 renderBars();
 renderDetail();
+wireExports();
 </script>
 </body>
 </html>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="466" viewBox="0 0 760 466">
+<rect width="760" height="466" fill="#0f1420"/>
+<text x="24" y="40" fill="#e8edf7" font-size="20" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">Scoring QA/QE - perfil: Cobertura total</text>
+<text x="24" y="97" fill="#e8edf7" font-size="14" font-family="Segoe UI, Roboto, Arial, sans-serif">WebdriverIO</text>
+<rect x="180" y="81" width="460" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>
+<rect x="180" y="81" width="388.7" height="22" rx="6" fill="#ff8a3d"/>
+<text x="654" y="97" fill="#ff8a3d" font-size="14" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">8.45</text>
+<text x="24" y="143" fill="#e8edf7" font-size="14" font-family="Segoe UI, Roboto, Arial, sans-serif">Playwright</text>
+<rect x="180" y="127" width="460" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>
+<rect x="180" y="127" width="384.1" height="22" rx="6" fill="#3ddc84"/>
+<text x="654" y="143" fill="#3ddc84" font-size="14" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">8.35</text>
+<text x="24" y="189" fill="#e8edf7" font-size="14" font-family="Segoe UI, Roboto, Arial, sans-serif">Robot Framework</text>
+<rect x="180" y="173" width="460" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>
+<rect x="180" y="173" width="377.2" height="22" rx="6" fill="#25c2d6"/>
+<text x="654" y="189" fill="#25c2d6" font-size="14" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">8.20</text>
+<text x="24" y="235" fill="#e8edf7" font-size="14" font-family="Segoe UI, Roboto, Arial, sans-serif">Serenity BDD</text>
+<rect x="180" y="219" width="460" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>
+<rect x="180" y="219" width="363.4" height="22" rx="6" fill="#5b8def"/>
+<text x="654" y="235" fill="#5b8def" font-size="14" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">7.90</text>
+<text x="24" y="281" fill="#e8edf7" font-size="14" font-family="Segoe UI, Roboto, Arial, sans-serif">Cypress</text>
+<rect x="180" y="265" width="460" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>
+<rect x="180" y="265" width="299.0" height="22" rx="6" fill="#69d3a7"/>
+<text x="654" y="281" fill="#69d3a7" font-size="14" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">6.50</text>
+<text x="24" y="327" fill="#e8edf7" font-size="14" font-family="Segoe UI, Roboto, Arial, sans-serif">Maestro</text>
+<rect x="180" y="311" width="460" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>
+<rect x="180" y="311" width="287.5" height="22" rx="6" fill="#4aa8e0"/>
+<text x="654" y="327" fill="#4aa8e0" font-size="14" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">6.25</text>
+<text x="24" y="373" fill="#e8edf7" font-size="14" font-family="Segoe UI, Roboto, Arial, sans-serif">Appium (driver)</text>
+<rect x="180" y="357" width="460" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>
+<rect x="180" y="357" width="271.4" height="22" rx="6" fill="#b07cf0"/>
+<text x="654" y="373" fill="#b07cf0" font-size="14" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">5.90</text>
+<text x="24" y="419" fill="#e8edf7" font-size="14" font-family="Segoe UI, Roboto, Arial, sans-serif">Karate</text>
+<rect x="180" y="403" width="460" height="22" rx="6" fill="#202a40" stroke="#2b3651"/>
+<rect x="180" y="403" width="262.2" height="22" rx="6" fill="#ff5470"/>
+<text x="654" y="419" fill="#ff5470" font-size="14" font-weight="700" font-family="Segoe UI, Roboto, Arial, sans-serif">5.70</text>
+</svg>
